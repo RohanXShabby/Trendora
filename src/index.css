@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+@theme {
+    --color-red-200: #DB4444;
+    /* primary Red color  */
+}
+
+@theme {
+    --color-red-100: #E07575;
+    /* Hover Red  color  */
+}
+
+@theme {
+    --color-gray-800: #202020;
+    /* Dark Mode BG  */
+}
+
+@theme {
+    --spacing-32: 8vw;
+    /* App padding  */
+}
