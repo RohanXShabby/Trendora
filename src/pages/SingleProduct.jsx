@@ -167,12 +167,14 @@ const SingleProduct = () => {
                     </div>
                 </div>
             </div>
-            <Heading subHeading='Related Items' />
-            <div className='px-32 grid grid-cols-5 gap-8 pb-20'>
+            <div className='px-32'>
+                <Heading subHeading='Related Items' />
+            </div>
+            <div className='px-32 grid md:grid-cols-3 grid-cols-1 lg:grid-cols-5 gap-8 pb-20'>
                 {product.slice(no, no + 5).map((e) => {
+                    console.log(e)
                     return <ProductCard key={e.id}
-                        id={e.id} title={e.title} image={e.image} price={e.price} description={e.description} brand={e.brand} model={e.model}
-                        color={e.color} category={e.category} discount={e.discount} rating={5}
+                        item={e}
                     />
                 })}
             </div>

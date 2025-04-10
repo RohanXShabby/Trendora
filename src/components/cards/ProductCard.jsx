@@ -14,6 +14,7 @@ const ProductCard = ({ item }) => {
 
     const [selectedSize, setSelectedSize] = useState("M");
     const [quantity, setQuantity] = useState(0);
+    const [cartItems, setCartItems] = useState([])
 
     const cartValue = useContext(AppContext)
 
@@ -22,13 +23,12 @@ const ProductCard = ({ item }) => {
         cartValue.increment()
     };
     const decrement = () => {
-        setQuantity((q) => (q > 1 ? q - 1 : 1))
+        setQuantity((q) => (q > 0 ? q - 1 : 1))
         cartValue.decrement()
     };
 
     const { isInWishlist, toggleWishlist } = useWishlist();
     const inWishlist = isInWishlist(item.id);
-
 
     if (item.image) {
         return (
@@ -53,7 +53,7 @@ const ProductCard = ({ item }) => {
                     <div className='flex items-start  md:items-center flex-col md:flex-row gap-1 md:gap-2 '>
                         <span className='text-red-200'> ${item.price}</span>
                         <span className='flex items-center justify-center'>
-                            {[...Array(item.rating)].map((_, i) => {
+                            {[...Array(5)].map((_, i) => {
                                 return <span key={i}  >
                                     <FaStar className='text-yellow-500' />
                                 </span>
@@ -63,7 +63,21 @@ const ProductCard = ({ item }) => {
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-between '>
                         <Redbutton text='Buy Now' to={`/products/${item.id}`} className={`whitespace-nowrap text-sm rounded-sm`} />
-                        <Redbutton text='Add to Cart' onClick={(e) => increment()} className={` whitespace-nowrap text-sm rounded-sm`} />
+                        {quantity === 0 ? <Redbutton text='Add to Cart' onClick={() => increment()} className={` whitespace-nowrap text-sm rounded-sm`} /> : <div className="flex border rounded overflow-hidden">
+                            <button
+                                onClick={decrement}
+                                className="flex items-center justify-center w-full text-lg font-semibold border-r"
+                            >
+                                −
+                            </button>
+                            <span className="flex items-center justify-center w-full py-1 text-lg">{quantity}</span>
+                            <button
+                                onClick={increment}
+                                className="flex items-center justify-center w-full text-lg font-semibold border-l bg-red-500 text-white"
+                            >
+                                +
+                            </button>
+                        </div>}
                     </div>
                 </div>
             </div >

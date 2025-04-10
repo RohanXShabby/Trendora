@@ -1,10 +1,17 @@
 // src/context/WishlistContext.jsx
-import { createContext, useState, useCallback, useMemo } from "react";
+import { createContext, useState, useCallback, useMemo, useEffect } from "react";
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-    const [wishlist, setWishlist] = useState([]);
+    const [wishlist, setWishlist] = useState(() => {
+        const stored = localStorage.getItem("wishlist");
+        return stored ? JSON.parse(stored) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    }, [wishlist]);
 
     const isInWishlist = useCallback(
         (id) => wishlist.some((item) => item.id === id),

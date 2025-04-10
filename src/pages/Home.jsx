@@ -10,6 +10,9 @@ import CountdownTimer from '../components/UI/CountDownTimer';
 import ServiceFeatures from '../components/UI/ServiceFeature';
 
 const Home = () => {
+    const [no] = useState(() => Math.ceil(Math.random() * 140));
+    const [no2] = useState(() => Math.ceil(Math.random() * 140));
+    const [no3] = useState(() => Math.ceil(Math.random() * 140));
     const [product, setProduct] = useState([])
     const [productCount, setProductCount] = useState(5)
     useEffect(() => {
@@ -23,7 +26,7 @@ const Home = () => {
             }
         };
 
-        handleResize(); // Check initial size
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -37,9 +40,6 @@ const Home = () => {
             throw new Error({ err })
         })
     }, [])
-    const no = Math.ceil(Math.random() * 140)
-    const no2 = Math.ceil(Math.random() * 140)
-    const no3 = Math.ceil(Math.random() * 140)
     return (
         <>
             <OfferBanner />
@@ -51,7 +51,7 @@ const Home = () => {
             </div>
             <div className='flex  px-32 md:gap-32 gap-2 items-center'>
                 <Heading subHeading="Today's" h1='Flash Sales' />
-                <CountdownTimer targetDate="2025-04-10T23:59:59" />
+                <CountdownTimer targetDate="2026-04-10T23:59:59" />
             </div>
             <div className='flex flex-col gap-8 '>
                 <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-8'>
