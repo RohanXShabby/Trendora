@@ -12,7 +12,6 @@ const Wishlist = () => {
   const [randomNum] = useState(() => Math.ceil(Math.random() * 140));
 
 
-
   const { isInWishlist } = useWishlist()
 
   useEffect(() => {

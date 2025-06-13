@@ -1,35 +1,36 @@
 import React from "react";
 import {
-    FaMobileAlt,
-    FaLaptop,
-    FaCamera,
     FaHeadphones,
     FaGamepad,
+    FaMobileAlt,
+    FaTv,
+    FaLaptop,
+    FaBlender,
 } from "react-icons/fa";
-import { IoGameController } from "react-icons/io5";
-import { BsSmartwatch } from "react-icons/bs";
-import { Link } from "react-router-dom";
 
 const categories = [
-    { name: "Phones", icon: <FaMobileAlt /> },
-    { name: "Computers", icon: <FaLaptop /> },
-    { name: "SmartWatch", icon: <BsSmartwatch /> },
-    { name: "Camera", icon: <FaCamera /> },
-    { name: "HeadPhones", icon: <FaHeadphones /> },
-    { name: "Gaming", icon: <IoGameController /> },
+    { name: "Audio", icon: <FaHeadphones /> },
+    { name: "Gaming", icon: <FaGamepad /> },
+    { name: "Mobile", icon: <FaMobileAlt /> },
+    { name: "TV", icon: <FaTv /> },
+    { name: "Laptop", icon: <FaLaptop /> },
+    { name: "Appliances", icon: <FaBlender /> },
 ];
 
-const CategoryCards = () => {
+const CategoryCards = ({ onCategorySelect }) => {
     return (
-        <div className="grid lg:grid-cols-6 items-center gap-4  md:grid-cols-3 grid-cols-3 space-x-4 p-4 px-32">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 p-4 px-4 md:px-16 lg:px-32">
             {categories.map((cat, index) => (
-                <Link to='products'
+                <button
                     key={index}
-                    className="border flex flex-col w-full items-center justify-center py-6 rounded-2xl hover:bg-red-200  duration-200"
+                    className="border flex flex-col w-full items-center justify-center py-6 rounded-2xl hover:bg-red-200 duration-200 focus:bg-red-300 bg-gray-800 text-white"
+                    onClick={() => onCategorySelect && onCategorySelect(cat.name)}
                 >
-                    <div className="text-6xl mb-2">{cat.icon}</div>
-                    <div className="text-sm font-medium">{cat.name}</div>
-                </Link>
+                    <div className="text-4xl md:text-5xl lg:text-6xl mb-2">
+                        {cat.icon}
+                    </div>
+                    <div className="text-xs md:text-sm font-medium">{cat.name}</div>
+                </button>
             ))}
         </div>
     );

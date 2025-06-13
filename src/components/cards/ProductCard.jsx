@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { FaStar } from "react-icons/fa6";
 import { NavLink } from 'react-router-dom';
 import Redbutton from '../UI/RedButton'
 import { useContext } from 'react';
-import AppContext from '../../context/Context';
+import AppContext, { CartCountContext } from '../../context/Context';
 import useWishlist from "../../hooks/useWishlist"
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
@@ -11,21 +11,9 @@ import { FaHeart } from "react-icons/fa6";
 
 const ProductCard = ({ item }) => {
 
-
-    const [selectedSize, setSelectedSize] = useState("M");
-    const [quantity, setQuantity] = useState(0);
-    const [cartItems, setCartItems] = useState([])
-
     const cartValue = useContext(AppContext)
+    const { increment, decrement, cartItems, itemInCart } = useContext(CartCountContext);
 
-    const increment = () => {
-        setQuantity((q) => q + 1);
-        cartValue.increment()
-    };
-    const decrement = () => {
-        setQuantity((q) => (q > 0 ? q - 1 : 1))
-        cartValue.decrement()
-    };
 
     const { isInWishlist, toggleWishlist } = useWishlist();
     const inWishlist = isInWishlist(item.id);
@@ -62,22 +50,39 @@ const ProductCard = ({ item }) => {
                         </span>
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-between '>
-                        <Redbutton text='Buy Now' to={`/products/${item.id}`} className={`whitespace-nowrap text-sm rounded-sm`} />
-                        {quantity === 0 ? <Redbutton text='Add to Cart' onClick={() => increment()} className={` whitespace-nowrap text-sm rounded-sm`} /> : <div className="flex border rounded overflow-hidden">
-                            <button
-                                onClick={decrement}
-                                className="flex items-center justify-center w-full text-lg font-semibold border-r"
+                        <Redbutton
+                            text='Buy Now'
+                            to={`/products/${item.id}`}
+                            className={`whitespace-nowrap text-sm rounded-sm`}
+                        />
+                        {itemInCart(item.id) ?
+                            <Redbutton
+                                text='Add to Cart'
+                                onClick={(item) => {
+                                    itemInCart(item.id),
+                                        increment(item)
+                                }}
+                                className={` whitespace-nowrap text-sm rounded-sm`} />
+                            : <div
+                                className="flex border rounded overflow-hidden"
                             >
-                                −
-                            </button>
-                            <span className="flex items-center justify-center w-full py-1 text-lg">{quantity}</span>
-                            <button
-                                onClick={increment}
-                                className="flex items-center justify-center w-full text-lg font-semibold border-l bg-red-500 text-white"
-                            >
-                                +
-                            </button>
-                        </div>}
+                                <button
+                                    onClick={decrement}
+                                    className="flex items-center justify-center w-full text-lg font-semibold border-r"
+                                >
+                                    −
+                                </button>
+                                <span
+                                    className="flex items-center justify-center w-full py-1 text-lg">
+                                    {quantity}
+                                </span>
+                                <button
+                                    onClick={() => increment(item)}
+                                    className="flex items-center justify-center w-full text-lg font-semibold border-l bg-red-500 text-white"
+                                >
+                                    +
+                                </button>
+                            </div>}
                     </div>
                 </div>
             </div >

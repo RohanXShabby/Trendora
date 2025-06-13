@@ -87,7 +87,8 @@ const SingleProduct = () => {
                             ))}
                         </div>
                         {/* Size Selector */}
-                        <div className="flex items-center gap-4">
+
+                        {/* <div className="flex items-center gap-4">
                             <span className="font-medium">Size:</span>
                             {sizes.map((size) => (
                                 <button
@@ -101,7 +102,7 @@ const SingleProduct = () => {
                                     {size}
                                 </button>
                             ))}
-                        </div>
+                        </div> */}
                         {/* Add to card or Buy Now */}
                         <div className="space-y-4 ">
 
