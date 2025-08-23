@@ -1,22 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import OfferBanner from '../components/UI/OfferBanner'
-import Banner from '../components/UI/Banner'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import OfferBanner from '../components/UI/OfferBanner';
+import Banner from '../components/UI/Banner';
 import Heading from '../components/UI/Heading';
 import getProduct from '../api/getProduct';
-import ProductCard from '../components/cards/ProductCard'
-import RedButton from '../components/UI/RedButton'
+import ProductCard from '../components/cards/ProductCard';
+import RedButton from '../components/UI/RedButton';
 import CategoryCards from '../components/UI/Categories';
 import CountdownTimer from '../components/UI/CountDownTimer';
 import ServiceFeatures from '../components/UI/ServiceFeature';
 
+// Helper function to get a safe random index
+const getRandomIndex = (arrayLength, itemsToDisplay) => {
+    if (arrayLength <= itemsToDisplay) {
+        return 0;
+    }
+    return Math.floor(Math.random() * (arrayLength - itemsToDisplay));
+};
+
 const Home = () => {
     const navigate = useNavigate();
-    const [no] = useState(() => Math.ceil(Math.random() * 140));
-    const [no2] = useState(() => Math.ceil(Math.random() * 140));
-    const [no3] = useState(() => Math.ceil(Math.random() * 140));
-    const [product, setProduct] = useState([])
-    const [productCount, setProductCount] = useState(5)
+    const [product, setProduct] = useState([]);
+    const [productCount, setProductCount] = useState(5);
+    const [no, setNo] = useState(0);
+    const [no2, setNo2] = useState(0);
+    const [no3, setNo3] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -40,16 +48,25 @@ const Home = () => {
     useEffect(() => {
         setLoading(true);
         setError(null);
-        getProduct().then(
-            (data) => {
+        getProduct()
+            .then((data) => {
                 setProduct(data);
                 setLoading(false);
-            }
-        ).catch((err) => {
-            setError('Failed to fetch products. Please try again.');
-            setLoading(false);
-        })
-    }, [])
+
+                // Set safe random indices after data is fetched
+                const safeNo = getRandomIndex(data.length, productCount);
+                const safeNo2 = getRandomIndex(data.length, productCount);
+                const safeNo3 = getRandomIndex(data.length, 8); // Displaying 8 items here
+
+                setNo(safeNo);
+                setNo2(safeNo2);
+                setNo3(safeNo3);
+            })
+            .catch((err) => {
+                setError('Failed to fetch products. Please try again.');
+                setLoading(false);
+            });
+    }, [productCount]);
 
     // Map UI category names to API category values
     const categoryMap = {
@@ -60,6 +77,7 @@ const Home = () => {
         "Laptop": "laptop",
         "Appliances": "appliances"
     };
+
     // Filter products by selected category
     const filteredProducts = selectedCategory
         ? product.filter((item) => item.category && item.category.toLowerCase() === categoryMap[selectedCategory]?.toLowerCase())
@@ -90,23 +108,21 @@ const Home = () => {
                         </div>
                         <CategoryCards onCategorySelect={handleCategorySelect} />
                     </div>
-                    <div className='flex  px-32 md:gap-32 gap-2 items-center'>
+                    <div className='flex px-32 md:gap-32 gap-2 items-center'>
                         <Heading subHeading="Today's" h1='Flash Sales' />
                         <CountdownTimer targetDate="2026-04-10T23:59:59" />
                     </div>
-                    <div className='flex flex-col gap-8 '>
-                        <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-8'>
-                            {filteredProducts.slice(no, no + productCount).map((item) => {
-                                return <ProductCard key={item.id}
-                                    item={item}
-                                />
+                    <div className='flex flex-col gap-8'>
+                        <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'>
+                            {product.slice(no, no + productCount).map((item) => {
+                                return <ProductCard key={item.id} product={item} />
                             })}
                         </div>
                         <div className='flex justify-center'>
                             <RedButton text='View All Products' to='/products' className='rounded-sm' />
                         </div>
                     </div>
-                    <div className='hidden md:block '>
+                    <div className='hidden md:block'>
                         <div className='px-32'>
                             <Heading subHeading="Categories" h1='Browse By Category' />
                         </div>
@@ -119,9 +135,7 @@ const Home = () => {
                     <div className='flex flex-col gap-8 py-4'>
                         <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'>
                             {filteredProducts.slice(no2, no2 + productCount).map((item) => {
-                                return <ProductCard key={item.id}
-                                    item={item}
-                                />
+                                return <ProductCard key={item.id} product={item} />
                             })}
                         </div>
                     </div>
@@ -132,9 +146,7 @@ const Home = () => {
                     <div className='flex flex-col gap-8 py-4'>
                         <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
                             {filteredProducts.slice(no3, no3 + 8).map((item) => {
-                                return <ProductCard key={item.id}
-                                    item={item}
-                                />
+                                return <ProductCard key={item.id} product={item} />
                             })}
                         </div>
                         <div className='flex justify-center'>
@@ -145,7 +157,7 @@ const Home = () => {
                 </>
             )}
         </>
-    )
-}
+    );
+};
 
-export default Home
+export default Home;

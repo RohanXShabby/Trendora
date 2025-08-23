@@ -4,13 +4,16 @@ import ProductCard from '../components/cards/ProductCard'
 import { FaStar } from "react-icons/fa6";
 import getProduct from '../api/getProduct';
 import { FaRegHeart } from "react-icons/fa";
-import AppContext from '../context/Context';
+import { CartItemsContext } from '../context/Context';
+import WishlistContext from '../context/WishlistContext';
 import { FaTruck, FaUndoAlt } from "react-icons/fa";
 import Heading from '../components/UI/Heading';
 
 const SingleProduct = () => {
     let item = useLoaderData();
     const [selectedColor, setSelectedColor] = useState("green");
+    const { addToCart, increment, decrement } = useContext(CartItemsContext);
+    const { isInWishlist, toggleWishlist } = useContext(WishlistContext);
 
     const colors = [
         { name: "green", class: "bg-green-500" },
@@ -29,20 +32,25 @@ const SingleProduct = () => {
     }, [])
 
     const [selectedSize, setSelectedSize] = useState("M");
-    const [quantity, setQuantity] = useState(0);
+    const [quantity, setQuantity] = useState(1);
 
     const sizes = ["XS", "S", "M", "L", "XL"];
 
-    const cartValue = useContext(AppContext)
-
-    const increment = () => {
+    const handleIncrement = () => {
         setQuantity((q) => q + 1);
-        cartValue.increment()
     };
-    const decrement = () => {
-        setQuantity((q) => (q > 1 ? q - 1 : 1))
-        cartValue.decrement()
+
+    const handleDecrement = () => {
+        setQuantity((q) => (q > 1 ? q - 1 : 1));
     };
+
+    const handleAddToCart = () => {
+        // Add the product with the selected quantity
+        for (let i = 0; i < quantity; i++) {
+            addToCart(item);
+        }
+    };
+
     const no = Math.ceil(Math.random() * 130)
 
     return (
@@ -111,27 +119,34 @@ const SingleProduct = () => {
                                 {/* Quantity Control */}
                                 <div className="flex border rounded overflow-hidden">
                                     <button
-                                        onClick={decrement}
+                                        onClick={handleDecrement}
                                         className="px-3 text-lg font-semibold border-r"
                                     >
                                         −
                                     </button>
                                     <span className="px-4 py-1 text-lg">{quantity}</span>
                                     <button
-                                        onClick={increment}
+                                        onClick={handleIncrement}
                                         className="px-3 text-lg font-semibold border-l bg-red-500 text-white"
                                     >
                                         +
                                     </button>
                                 </div>
 
-                                {/* Buy Now Button */}
-                                <button className="bg-red-500 text-white px-5 py-2 rounded">
-                                    Buy Now
+                                {/* Add to Cart Button */}
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition"
+                                >
+                                    Add to Cart
                                 </button>
 
                                 {/* Wishlist Icon */}
-                                <button className="border rounded cursor-pointer p-2 hover:bg-gray-900">
+                                <button
+                                    onClick={() => toggleWishlist(item)}
+                                    className={`border rounded cursor-pointer p-2 hover:bg-gray-900 transition ${isInWishlist(item.id) ? 'bg-red-500 text-white' : ''
+                                        }`}
+                                >
                                     <FaRegHeart />
                                 </button>
                             </div>
@@ -173,9 +188,8 @@ const SingleProduct = () => {
             </div>
             <div className='px-32 grid md:grid-cols-3 grid-cols-1 lg:grid-cols-5 gap-8 pb-20'>
                 {product.slice(no, no + 5).map((e) => {
-                    console.log(e)
                     return <ProductCard key={e.id}
-                        item={e}
+                        product={e}
                     />
                 })}
             </div>

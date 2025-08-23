@@ -12,6 +12,7 @@ import getProduct from "./api/getProduct"
 import SingleProduct from "./pages/SingleProduct"
 import getSingleProduct from "./api/getSingleProduct"
 import LogIn from "./pages/LogIn"
+import Checkout from "./pages/Checkout"
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
       { path: "wishlist", element: <Wishlist /> },
       { path: "signup", element: <SignUp /> },
       { path: "login", element: <LogIn /> },
+      { path: "checkout", element: <Checkout /> },
     ]
   }])
 

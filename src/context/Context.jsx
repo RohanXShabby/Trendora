@@ -1,4 +1,4 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useState, useEffect } from "react";
 
 const AppContext = createContext(0)
 export const CartCountContext = createContext();
@@ -6,10 +6,24 @@ export const CartItemsContext = createContext();
 
 export const ContextProvider = ({ children }) => {
     const [cartCount, setCartCount] = useState(0);
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState(() => {
+        const stored = localStorage.getItem("cart");
+        return stored ? JSON.parse(stored) : [];
+    });
 
-    const increment = (product) => {
-        if (!product || !product.id) return prev => prev; // Guard clause to prevent errors
+    // Update cart count whenever cartItems changes
+    useEffect(() => {
+        const newCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+        setCartCount(newCount);
+    }, [cartItems]);
+
+    // Save cart items to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cartItems));
+    }, [cartItems]);
+
+    const addToCart = (product) => {
+        if (!product || !product.id) return;
         setCartItems(prev => {
             const found = prev.find(p => p.id === product.id);
             if (found) {
@@ -20,51 +34,57 @@ export const ContextProvider = ({ children }) => {
                 return [...prev, { ...product, quantity: 1 }];
             }
         });
-        setCartCount(prev => prev + 1);
     };
 
-    const itemInCart = useCallback(
-        (id) => (id) => cartItems.some((item) => item.id === id), [cartItems]
-    )
+    const increment = (product) => {
+        addToCart(product);
+    };
 
     const decrement = (product) => {
-        if (!product || !product.id) return prev => prev; // Guard clause to prevent errors
-        setCartItems(prev =>
-            prev.map(p =>
+        if (!product || !product.id) return;
+        setCartItems(prev => {
+            const item = prev.find(p => p.id === product.id);
+            if (!item) return prev;
+
+            if (item.quantity === 1) {
+                return prev.filter(p => p.id !== product.id);
+            }
+
+            return prev.map(p =>
                 p.id === product.id
-                    ? { ...p, quantity: Math.max(p.quantity - 1, 1) }
+                    ? { ...p, quantity: p.quantity - 1 }
                     : p
-            )
-        );
-        setCartCount(prev => (prev > 1 ? prev - 1 : 1));
+            );
+        });
     };
 
-    return <AppContext.Provider
-        value={{
-            cartCount,
-            increment,
-            decrement,
-            cartItems,
-            setCartItems,
-            itemInCart
-        }}>
-        <CartCountContext.Provider
+    const removeFromCart = (productId) => {
+        setCartItems(prev => prev.filter(item => item.id !== productId));
+    };
+
+    const clearCart = () => {
+        setCartItems([]);
+    };
+
+    return (
+        <CartItemsContext.Provider
             value={{
-                cartCount,
+                cartItems,
+                setCartItems,
+                addToCart,
                 increment,
-                itemInCart,
-                decrement
+                decrement,
+                removeFromCart,
+                clearCart
             }}>
-            <CartItemsContext.Provider
+            <CartCountContext.Provider
                 value={{
-                    cartItems,
-                    setCartItems,
-                    itemInCart
+                    cartCount,
                 }}>
                 {children}
-            </CartItemsContext.Provider>
-        </CartCountContext.Provider>
-    </AppContext.Provider>
+            </CartCountContext.Provider>
+        </CartItemsContext.Provider>
+    );
 }
 
-export default AppContext
+export default AppContext;
