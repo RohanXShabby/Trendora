@@ -15,7 +15,7 @@ const AppLayout = () => {
                     <AnnouncementBar />
                     <Navbar />
                 </div>
-                <div className='flex items-center justify-center w-full h-full '>
+                <div className='flex items-center justify-center w-full h-screen '>
                     <MoonLoader
                         color="#DB4444"
                         size={120}

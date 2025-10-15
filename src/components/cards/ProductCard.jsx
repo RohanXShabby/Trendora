@@ -4,7 +4,7 @@ import { CartItemsContext } from "../../context/Context";
 import WishlistContext from "../../context/WishlistContext";
 import { Heart, ShoppingCart, Check } from "lucide-react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onCardClick }) => {
     const { addToCart, isInCart } = useContext(CartItemsContext);
     const { isInWishlist, toggleWishlist } = useContext(WishlistContext);
 
@@ -12,8 +12,21 @@ const ProductCard = ({ product }) => {
 
     const alreadyInCart = isInCart(product.id);
 
+    const handleCardClick = () => {
+        if (onCardClick) {
+            onCardClick(product);
+        }
+    };
+
+    const handleButtonClick = (e) => {
+        e.stopPropagation(); // Prevent card click when button is clicked
+    };
+
     return (
-        <div className="group relative border border-gray-50/20 rounded-xl p-3 shadow-sm hover:shadow-lg transition">
+        <div
+            className="group relative border border-gray-50/20 rounded-xl p-3 shadow-sm hover:shadow-lg transition cursor-pointer"
+            onClick={handleCardClick}
+        >
             {/* Product Image */}
             <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                 <img
@@ -27,7 +40,10 @@ const ProductCard = ({ product }) => {
             <button
                 className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition ${isInWishlist(product.id) ? " text-white" : "bg-white text-gray-600"
                     }`}
-                onClick={() => toggleWishlist(product)}
+                onClick={(e) => {
+                    handleButtonClick(e);
+                    toggleWishlist(product);
+                }}
             >
                 <Heart
                     className={`w-5 h-5 ${isInWishlist(product.id) ? "fill-red-200 stroke-red-200" : ""}`}
@@ -44,7 +60,10 @@ const ProductCard = ({ product }) => {
 
             {/* Cart Button */}
             <button
-                onClick={() => addToCart(product)}
+                onClick={(e) => {
+                    handleButtonClick(e);
+                    addToCart(product);
+                }}
                 disabled={alreadyInCart}
                 className={`mt-2 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm transition ${alreadyInCart ? 'bg-gray-600 text-white cursor-not-allowed' : 'bg-red-200 hover:bg-red-100 text-white'}`}
             >

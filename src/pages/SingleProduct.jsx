@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/cards/ProductCard'
 import { FaStar } from "react-icons/fa6";
 import getProduct from '../api/getProduct';
@@ -11,9 +11,14 @@ import Heading from '../components/UI/Heading';
 
 const SingleProduct = () => {
     let item = useLoaderData();
+    const navigate = useNavigate();
     const [selectedColor, setSelectedColor] = useState("green");
     const { addToCart, isInCart } = useContext(CartItemsContext);
     const { isInWishlist, toggleWishlist } = useContext(WishlistContext);
+
+    const handleProductClick = (product) => {
+        navigate(`/products/${product.id}`);
+    };
 
     const colors = [
         { name: "green", class: "bg-green-500" },
@@ -193,6 +198,7 @@ const SingleProduct = () => {
                 {product.slice(no, no + 5).map((e) => {
                     return <ProductCard key={e.id}
                         product={e}
+                        onCardClick={handleProductClick}
                     />
                 })}
             </div>

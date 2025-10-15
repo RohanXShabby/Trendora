@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom';
 import WishlistContext from '../context/WishlistContext'
 import ProductCard from '../components/cards/ProductCard';
 import RedButton from '../components/UI/RedButton';
@@ -6,9 +7,14 @@ import getProduct from '../api/getProduct';
 import Heading from '../components/UI/Heading';
 
 const Wishlist = () => {
+  const navigate = useNavigate();
   const { wishlist, isInWishlist } = useContext(WishlistContext);
   const [product, setProduct] = useState([])
   const [randomNum] = useState(() => Math.ceil(Math.random() * 140));
+
+  const handleProductClick = (product) => {
+    navigate(`/products/${product.id}`);
+  };
 
   useEffect(() => {
     getProduct().then(
@@ -32,6 +38,7 @@ const Wishlist = () => {
           {wishlist.length > 0 ? wishlist.map((item) => {
             return <ProductCard key={item.id}
               product={item}
+              onCardClick={handleProductClick}
             />
           }) : <span className='text-red-200'>No Product In Your WishList!</span>
           }
@@ -46,6 +53,7 @@ const Wishlist = () => {
             {product && product.slice(randomNum, randomNum + 5).filter((item) => !wishlistIds.includes(item.id)).map((item) => {
               return <ProductCard key={item.id}
                 product={item}
+                onCardClick={handleProductClick}
               />
             })}
           </div>

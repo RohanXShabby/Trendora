@@ -87,6 +87,10 @@ const Home = () => {
         navigate(`/products?category=${category.toLowerCase()}`);
     };
 
+    const handleProductClick = (product) => {
+        navigate(`/products/${product.id}`);
+    };
+
     return (
         <>
             {loading && (
@@ -115,7 +119,7 @@ const Home = () => {
                     <div className='flex flex-col gap-8'>
                         <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'>
                             {product.slice(no, no + productCount).map((item) => {
-                                return <ProductCard key={item.id} product={item} />
+                                return <ProductCard key={item.id} product={item} onCardClick={handleProductClick} />
                             })}
                         </div>
                         <div className='flex justify-center'>
@@ -135,7 +139,7 @@ const Home = () => {
                     <div className='flex flex-col gap-8 py-4'>
                         <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'>
                             {filteredProducts.slice(no2, no2 + productCount).map((item) => {
-                                return <ProductCard key={item.id} product={item} />
+                                return <ProductCard key={item.id} product={item} onCardClick={handleProductClick} />
                             })}
                         </div>
                     </div>
@@ -146,7 +150,7 @@ const Home = () => {
                     <div className='flex flex-col gap-8 py-4'>
                         <div className='px-32 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
                             {filteredProducts.slice(no3, no3 + 8).map((item) => {
-                                return <ProductCard key={item.id} product={item} />
+                                return <ProductCard key={item.id} product={item} onCardClick={handleProductClick} />
                             })}
                         </div>
                         <div className='flex justify-center'>

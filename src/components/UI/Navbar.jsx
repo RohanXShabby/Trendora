@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { IoMdSearch } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
@@ -9,6 +9,9 @@ import { LuChartNoAxesColumnDecreasing } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
 
 const Navbar = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [mobileSearchQuery, setMobileSearchQuery] = useState('');
+
     const navLinks = [
         {
             path: "/",
@@ -40,6 +43,28 @@ const Navbar = () => {
     const handleSignUpClick = () => {
         navigate('/signup')
     }
+
+    const handleSearch = (query) => {
+        if (query.trim()) {
+            navigate(`/products?search=${encodeURIComponent(query.trim())}`);
+            setSearchQuery('');
+            setMobileSearchQuery('');
+        }
+    };
+
+    const handleDesktopSearch = () => {
+        handleSearch(searchQuery);
+    };
+
+    const handleMobileSearch = () => {
+        handleSearch(mobileSearchQuery);
+    };
+
+    const handleKeyPress = (e, query, setQuery) => {
+        if (e.key === 'Enter') {
+            handleSearch(query);
+        }
+    };
 
     const { cartCount } = useContext(CartCountContext);
     const { wishlist } = useContext(WishlistContext);
@@ -77,8 +102,18 @@ const Navbar = () => {
                 </div>
                 <div className='flex items-center  gap-6 font-2xl '>
                     <div className='hidden h-full lg:flex items-center'>
-                        <input className='w-[12rem]  bg-gray-500 p-3 outline-0' type="text" placeholder='Search Product...' />
-                        <button className='font-3xl bg-gray-500'>
+                        <input
+                            className='w-[12rem]  bg-gray-500 p-3 outline-0'
+                            type="text"
+                            placeholder='Search Product...'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyPress={(e) => handleKeyPress(e, searchQuery, setSearchQuery)}
+                        />
+                        <button
+                            className='font-3xl bg-gray-500'
+                            onClick={handleDesktopSearch}
+                        >
                             <IoMdSearch className='text-5xl w-10 rounded-br-2xl cursor-pointer rounded-tr-2xl' />
                         </button>
                     </div>
@@ -98,8 +133,18 @@ const Navbar = () => {
                 </div>
             </nav>
             <div className='flex h-full lg:hidden w-screen items-center px-32'>
-                <input className=' bg-gray-500 w-full  p-3 outline-0' type="text" placeholder='Search Product...' />
-                <button className='font-3xl bg-gray-500'>
+                <input
+                    className=' bg-gray-500 w-full  p-3 outline-0'
+                    type="text"
+                    placeholder='Search Product...'
+                    value={mobileSearchQuery}
+                    onChange={(e) => setMobileSearchQuery(e.target.value)}
+                    onKeyPress={(e) => handleKeyPress(e, mobileSearchQuery, setMobileSearchQuery)}
+                />
+                <button
+                    className='font-3xl bg-gray-500'
+                    onClick={handleMobileSearch}
+                >
                     <IoMdSearch className='text-5xl w-10 rounded-br-2xl cursor-pointer rounded-tr-2xl' />
                 </button>
             </div>
