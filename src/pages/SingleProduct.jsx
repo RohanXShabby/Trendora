@@ -12,7 +12,7 @@ import Heading from '../components/UI/Heading';
 const SingleProduct = () => {
     let item = useLoaderData();
     const [selectedColor, setSelectedColor] = useState("green");
-    const { addToCart, increment, decrement } = useContext(CartItemsContext);
+    const { addToCart, isInCart } = useContext(CartItemsContext);
     const { isInWishlist, toggleWishlist } = useContext(WishlistContext);
 
     const colors = [
@@ -50,6 +50,8 @@ const SingleProduct = () => {
             addToCart(item);
         }
     };
+
+    const alreadyInCart = isInCart(item.id);
 
     const no = Math.ceil(Math.random() * 130)
 
@@ -136,9 +138,10 @@ const SingleProduct = () => {
                                 {/* Add to Cart Button */}
                                 <button
                                     onClick={handleAddToCart}
-                                    className="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-600 transition"
+                                    disabled={alreadyInCart}
+                                    className={`px-5 py-2 rounded hover:bg-red-600 transition ${alreadyInCart ? 'bg-gray-600 text-white cursor-not-allowed' : 'bg-red-500 text-white'}`}
                                 >
-                                    Add to Cart
+                                    {alreadyInCart ? 'Added to Cart' : 'Add to Cart'}
                                 </button>
 
                                 {/* Wishlist Icon */}

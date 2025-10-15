@@ -2,16 +2,18 @@
 import { useContext } from "react";
 import { CartItemsContext } from "../../context/Context";
 import WishlistContext from "../../context/WishlistContext";
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart, Check } from "lucide-react";
 
 const ProductCard = ({ product }) => {
-    const { addToCart } = useContext(CartItemsContext);
+    const { addToCart, isInCart } = useContext(CartItemsContext);
     const { isInWishlist, toggleWishlist } = useContext(WishlistContext);
 
     if (!product) return null; // safety check
 
+    const alreadyInCart = isInCart(product.id);
+
     return (
-        <div className="group relative border rounded-xl p-3 shadow-sm hover:shadow-lg transition">
+        <div className="group relative border border-gray-50/20 rounded-xl p-3 shadow-sm hover:shadow-lg transition">
             {/* Product Image */}
             <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                 <img
@@ -43,10 +45,11 @@ const ProductCard = ({ product }) => {
             {/* Cart Button */}
             <button
                 onClick={() => addToCart(product)}
-                className="mt-2 w-full flex items-center justify-center gap-2 bg-red-200 hover:bg-red-100 text-white py-2 px-3 rounded-lg text-sm transition"
+                disabled={alreadyInCart}
+                className={`mt-2 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm transition ${alreadyInCart ? 'bg-gray-600 text-white cursor-not-allowed' : 'bg-red-200 hover:bg-red-100 text-white'}`}
             >
-                <ShoppingCart className="w-4 h-4" />
-                Add to Cart
+                {alreadyInCart ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
+                {alreadyInCart ? 'Added to Cart' : 'Add to Cart'}
             </button>
         </div>
     );

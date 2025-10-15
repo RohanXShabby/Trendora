@@ -4,6 +4,7 @@ import { IoMdSearch } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { CartCountContext } from '../../context/Context';
+import WishlistContext from '../../context/WishlistContext';
 import { LuChartNoAxesColumnDecreasing } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
 
@@ -41,6 +42,7 @@ const Navbar = () => {
     }
 
     const { cartCount } = useContext(CartCountContext);
+    const { wishlist } = useContext(WishlistContext);
 
     let SliderRef = useRef()
 
@@ -80,7 +82,12 @@ const Navbar = () => {
                             <IoMdSearch className='text-5xl w-10 rounded-br-2xl cursor-pointer rounded-tr-2xl' />
                         </button>
                     </div>
-                    <FaRegHeart onClick={handleWishlistClick} className='text-3xl  cursor-pointer' />
+                    <div onClick={handleWishlistClick} className='flex items-center relative cursor-pointer'>
+                        <FaRegHeart className='text-3xl' />
+                        <span className='absolute -right-4 -top-2 rounded-full bg-red-200 px-2'>
+                            {wishlist?.length || 0}
+                        </span>
+                    </div>
                     <div onClick={handleCartClick} className='flex items-center relative cursor-pointer'>
                         <FiShoppingCart className='text-3xl ' />
                         <span className='absolute -right-4 -top-2 rounded-full bg-red-200 px-2' >

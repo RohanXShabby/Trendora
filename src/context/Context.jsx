@@ -22,6 +22,10 @@ export const ContextProvider = ({ children }) => {
         localStorage.setItem("cart", JSON.stringify(cartItems));
     }, [cartItems]);
 
+    const isInCart = useCallback((id) => {
+        return cartItems.some(p => p.id === id);
+    }, [cartItems]);
+
     const addToCart = (product) => {
         if (!product || !product.id) return;
         setCartItems(prev => {
@@ -71,6 +75,7 @@ export const ContextProvider = ({ children }) => {
             value={{
                 cartItems,
                 setCartItems,
+                isInCart,
                 addToCart,
                 increment,
                 decrement,
